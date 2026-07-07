@@ -26,4 +26,34 @@
 
 #container img {
     cursor: pointer;
+    height: auto;
+    width: 100%;
+}
+
+#container > div {
+    transition: transform 0.2s ease;
+}
+
+#container > div:hover {
+    transform: scale(1.03);
+}
+
+#sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100%;
+    background: white;
+    padding: 20px;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+    overflow-y: auto;
+}
+
+#close-btn {
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 20px;
+    float: right;
 }

@@ -15,6 +15,10 @@ topAnime.forEach((anime) => {
     imagem.addEventListener('click', () => {
     const sidebar = document.getElementById('sidebar');
 
+    if (!sidebar.classList.contains('escondido')) {
+        return;
+     }
+
         sidebar.innerHTML = `
         <button id="close-btn">x</button>
         <h2>${anime.title}</h2>
@@ -34,6 +38,16 @@ topAnime.forEach((anime) => {
 });
 });
     
+document.addEventListener('click', (evento) => {
+    const sidebar = document.getElementById('sidebar');
+    
+    const clicouDentroDaSidebar = sidebar.contains(evento.target);
+    const clicouNumaImagem = evento.target.tagName === 'IMG';
+    
+    if (!clicouDentroDaSidebar && !clicouNumaImagem) {
+        sidebar.classList.add('escondido');
+    }
+});
 
     const titulo = document.createElement('h3');
     titulo.textContent = anime.title;
