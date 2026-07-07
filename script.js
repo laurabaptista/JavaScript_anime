@@ -1,63 +1,71 @@
-fetch('https://api.jikan.moe/v4/top/anime')
-.then((response) => response.json())
-.then((data) => {
-    const topAnime = data.data.filter((anime) => anime.score > 9); // filtro dos cards com score >9
-    console.log(topAnime);
+// create the base elements dynamically
+const container = document.createElement("div");
+container.id = "container";
+document.body.appendChild(container);
 
-const container = document.getElementById('container'); // onde os cards vão entrar
+const sidebar = document.createElement("aside");
+sidebar.id = "sidebar";
+sidebar.classList.add("escondido");
+document.body.appendChild(sidebar);
 
-topAnime.forEach((anime) => {
-    const card = document.createElement('div'); // caixa do card
+const footer = document.createElement("footer");
+footer.id = "footer";
+document.body.appendChild(footer);
 
-    const imagem = document.createElement('img');
-    imagem.src = anime.images.jpg.image_url;
+fetch("https://api.jikan.moe/v4/top/anime")
+  .then((response) => response.json())
+  .then((data) => {
+    const topAnime = data.data.filter((anime) => anime.score > 9); // only keep anime with score above 9
 
-    imagem.addEventListener('click', () => {
-    const sidebar = document.getElementById('sidebar');
+    topAnime.forEach((anime) => {
+      const card = document.createElement("div");
 
-    if (!sidebar.classList.contains('escondido')) {
-        return;
-     }
+      const image = document.createElement("img");
+      image.src = anime.images.jpg.image_url;
+
+      image.addEventListener("click", () => {
+        if (!sidebar.classList.contains("escondido")) {
+          return;
+        }
 
         sidebar.innerHTML = `
-        <button id="close-btn">x</button>
-        <h2>${anime.title}</h2>
-        <p>Rating: ${anime.rating}</p>
-        <p>Data de lançamento: ${anime.aired.string}</p>
-        <p>Score: ${anime.score}</p>
-        <p>Synopsis: ${anime.synopsis}</p>
-        <p>Género: ${anime.genres.map((genero) => genero.name).join(', ')}</p>
-        <p>Studios: ${anime.studios.map((studio) => studio.name).join(',')}</p>
-    `;
-    
-    sidebar.classList.remove('escondido');
-    const closeBtn = document.getElementById('close-btn');
+          <button id="close-btn">x</button>
+          <h2>${anime.title}</h2>
+          <p>Rating: ${anime.rating}</p>
+          <p>Release date: ${anime.aired.string}</p>
+          <p>Score: ${anime.score}</p>
+          <p>Synopsis: ${anime.synopsis}</p>
+          <p>Genres: ${anime.genres.map((genre) => genre.name).join(", ")}</p>
+          <p>Studios: ${anime.studios.map((studio) => studio.name).join(", ")}</p>
+        `;
 
-    closeBtn.addEventListener('click', () => {
-    sidebar.classList.add('escondido');
-});
-});
-    
-document.addEventListener('click', (evento) => {
-    const sidebar = document.getElementById('sidebar');
-    
-    const clicouDentroDaSidebar = sidebar.contains(evento.target);
-    const clicouNumaImagem = evento.target.tagName === 'IMG';
-    
-    if (!clicouDentroDaSidebar && !clicouNumaImagem) {
-        sidebar.classList.add('escondido');
-    }
-});
+        sidebar.classList.remove("escondido");
 
-    const titulo = document.createElement('h3');
-    titulo.textContent = anime.title;
+        const closeBtn = document.getElementById("close-btn");
+        closeBtn.addEventListener("click", () => {
+          sidebar.classList.add("escondido");
+        });
+      });
 
-    card.appendChild(imagem);
-    card.appendChild(titulo);
+      const title = document.createElement("h3");
+      title.textContent = anime.title;
 
-    container.appendChild(card); // mete o card completo dentro do container
-});
-});
+      card.appendChild(image);
+      card.appendChild(title);
 
-const anoAtual = new Date().getFullYear(); // ano atual, automático
-document.getElementById('footer').textContent = `© ${anoAtual} Laura Baptista`;
+      container.appendChild(card);
+    });
+
+    // close sidebar when clicking outside of it or outside an image
+    document.addEventListener("click", (event) => {
+      const clickedInsideSidebar = sidebar.contains(event.target);
+      const clickedOnImage = event.target.tagName === "IMG";
+
+      if (!clickedInsideSidebar && !clickedOnImage) {
+        sidebar.classList.add("escondido");
+      }
+    });
+  });
+
+const currentYear = new Date().getFullYear();
+footer.textContent = `© ${currentYear} Laura Baptista`;
