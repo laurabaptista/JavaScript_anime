@@ -1,11 +1,19 @@
-// create the base elements dynamically
+let sidebarOpen = false;
+
+const header = document.createElement("header");
+header.innerHTML = `
+  <h1>Top anime</h1>
+  <p>The highest rated titles, according to MyAnimeList</p>
+`;
+document.body.appendChild(header);
+
 const container = document.createElement("div");
 container.id = "container";
 document.body.appendChild(container);
 
 const sidebar = document.createElement("aside");
 sidebar.id = "sidebar";
-sidebar.classList.add("escondido");
+sidebar.classList.add("hidden");
 document.body.appendChild(sidebar);
 
 const footer = document.createElement("footer");
@@ -23,46 +31,52 @@ fetch("https://api.jikan.moe/v4/top/anime")
       const image = document.createElement("img");
       image.src = anime.images.jpg.image_url;
 
-      image.addEventListener("click", () => {
-        if (!sidebar.classList.contains("escondido")) {
-          return;
-        }
-
-        sidebar.innerHTML = `
-          <button id="close-btn">x</button>
-          <h2>${anime.title}</h2>
-          <p>Rating: ${anime.rating}</p>
-          <p>Release date: ${anime.aired.string}</p>
-          <p>Score: ${anime.score}</p>
-          <p>Synopsis: ${anime.synopsis}</p>
-          <p>Genres: ${anime.genres.map((genre) => genre.name).join(", ")}</p>
-          <p>Studios: ${anime.studios.map((studio) => studio.name).join(", ")}</p>
-        `;
-
-        sidebar.classList.remove("escondido");
-
-        const closeBtn = document.getElementById("close-btn");
-        closeBtn.addEventListener("click", () => {
-          sidebar.classList.add("escondido");
-        });
-      });
-
       const title = document.createElement("h3");
       title.textContent = anime.title;
 
       card.appendChild(image);
       card.appendChild(title);
 
+      card.addEventListener("click", (event) => {
+        event.stopPropagation(); // prevent this same click from also triggering the document listener below
+
+        if (sidebarOpen === true) {
+          sidebar.classList.add("hidden");
+          sidebarOpen = false;
+          return;
+        }
+
+        sidebar.innerHTML = `
+          <button id="close-btn">x</button>
+          <h2>${anime.title}</h2>
+          <p><strong>Rating:</strong> ${anime.rating}</p>
+          <p><strong>Release date:</strong> ${anime.aired.string}</p>
+          <p><strong>Score:</strong> ${anime.score}</p>
+          <p><strong>Synopsis:</strong> ${anime.synopsis}</p>
+          <p><strong>Genres:</strong> ${anime.genres.map((genre) => genre.name).join(", ")}</p>
+          <p><strong>Studios:</strong> ${anime.studios.map((studio) => studio.name).join(", ")}</p>
+        `;
+
+        sidebar.classList.remove("hidden");
+        sidebarOpen = true;
+
+        const closeBtn = document.getElementById("close-btn");
+        closeBtn.addEventListener("click", () => {
+          sidebar.classList.add("hidden");
+          sidebarOpen = false;
+        });
+      });
+
       container.appendChild(card);
     });
 
-    // close sidebar when clicking outside of it or outside an image
+    // close sidebar when clicking anywhere outside of it (cards already handle themselves above)
     document.addEventListener("click", (event) => {
       const clickedInsideSidebar = sidebar.contains(event.target);
-      const clickedOnImage = event.target.tagName === "IMG";
 
-      if (!clickedInsideSidebar && !clickedOnImage) {
-        sidebar.classList.add("escondido");
+      if (!clickedInsideSidebar && sidebarOpen === true) {
+        sidebar.classList.add("hidden");
+        sidebarOpen = false;
       }
     });
   });
