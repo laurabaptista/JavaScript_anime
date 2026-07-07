@@ -16,6 +16,7 @@ topAnime.forEach((anime) => {
     const sidebar = document.getElementById('sidebar');
 
         sidebar.innerHTML = `
+        <button id="close-btn">x</button>
         <h2>${anime.title}</h2>
         <p>Rating: ${anime.rating}</p>
         <p>Data de lançamento: ${anime.aired.string}</p>
@@ -23,6 +24,11 @@ topAnime.forEach((anime) => {
     `;
     
     sidebar.classList.remove('escondido');
+    const closeBtn = document.getElementById('close-btn');
+
+    closeBtn.addEventListener('click', () => {
+    sidebar.classList.add('escondido');
+});
 });
     
 
