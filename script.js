@@ -20,7 +20,10 @@ topAnime.forEach((anime) => {
         <h2>${anime.title}</h2>
         <p>Rating: ${anime.rating}</p>
         <p>Data de lançamento: ${anime.aired.string}</p>
+        <p>Score: ${anime.score}</p>
+        <p>Synopsis: ${anime.synopsis}</p>
         <p>Género: ${anime.genres.map((genero) => genero.name).join(', ')}</p>
+        <p>Studios: ${anime.studios.map((studio) => studio.name).join(',')}</p>
     `;
     
     sidebar.classList.remove('escondido');
