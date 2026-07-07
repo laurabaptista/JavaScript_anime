@@ -12,6 +12,20 @@ topAnime.forEach((anime) => {
     const imagem = document.createElement('img');
     imagem.src = anime.images.jpg.image_url;
 
+    imagem.addEventListener('click', () => {
+    const sidebar = document.getElementById('sidebar');
+
+        sidebar.innerHTML = `
+        <h2>${anime.title}</h2>
+        <p>Rating: ${anime.rating}</p>
+        <p>Data de lançamento: ${anime.aired.string}</p>
+        <p>Género: ${anime.genres.map((genero) => genero.name).join(', ')}</p>
+    `;
+    
+    sidebar.classList.remove('escondido');
+});
+    
+
     const titulo = document.createElement('h3');
     titulo.textContent = anime.title;
 
